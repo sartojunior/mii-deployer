@@ -1,7 +1,7 @@
 #summary Configure Eclipse Project.
 ==Configure Eclipse Project==
 
-Right click mouse button on your project in Project Explorer view and choose Properties menu item. Select *SAP MII Configuration* page. 
+Right click mouse on your project in Project Explorer view and choose Properties menu item. Select *SAP MII Configuration* page. 
 
 All fields are required
   * Jdbc Driver - Here you can select or type JDBC driver class name. The default is the Oracle driver. To use drivers you need to install appropriate driver into Eclipse IDE
