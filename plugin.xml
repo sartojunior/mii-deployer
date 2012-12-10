@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="MiiPlugin.contribution1"
+            objectClass="org.eclipse.core.runtime.IAdaptable">
+         <menu
+               id="MiiPlugin.menu1"
+               label="SAP MII"
+               path="additions">
+               <separator
+                  name="group1">
+            </separator>
+          </menu>
+            <action
+                  class="org.asem.eclipse.mii.popup.actions.CommitToMii"
+                  enablesFor="+"
+                  id="MiiPlugin.newAction"
+                  label="Commit"
+                  menubarPath="MiiPlugin.menu1/group1">
+            </action>
+            <action
+                  class="org.asem.eclipse.mii.popup.actions.UpdateFromMii"
+                  enablesFor="+"
+                  id="MiiPlugin.newAction"
+                  label="Update"
+                  menubarPath="MiiPlugin.menu1/group1">
+            </action>
+            <action
+                  class="org.asem.eclipse.mii.popup.actions.ViewMii"
+                  enablesFor="1"
+                  id="MiiPlugin.newAction"
+                  label="View..."
+                  menubarPath="MiiPlugin.menu1/group1">
+            </action>
+      </objectContribution>
+   </extension>
+
+   <extension point="org.eclipse.ui.propertyPages">
+      <page
+            class="org.asem.eclipse.mii.properties.MiiPropertyPage"
+            id="org.asem.eclipse.mii.properties.MiiPropertyPage"
+            name="SAP MII Configuration"
+            nameFilter="*">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.asem.eclipse.mii.model.editor.ShapesEditor"
+            contributorClass="org.asem.eclipse.mii.model.editor.ShapesEditorActionBarContributor"
+            extensions="mej"
+            icon="icons/sample.gif"
+            id="org.asem.eclipse.mii.model.editor.ShapesEditor"
+            name="ExJS Editor">
+      </editor>
+   </extension>
+   
+	<extension
+	    point = "org.eclipse.ui.editorActions">
+	      <editorContribution 
+	         id="org.asem.eclipse.mii.popup.actions.JSGenerator" 
+	         targetID="org.asem.eclipse.mii.model.editor.ShapesEditor">        
+		   <action id="org.asem.eclipse.mii.popup.actions.GenerateJSCode" 
+	              label="GenerateCode" 
+	              toolbarPath="ShapesEditor" 
+	              icon="icons/generator.gif" 
+	              tooltip="GenerateCode" 
+	              class="org.asem.eclipse.mii.popup.actions.GenerateJSCode"
+	              definitionId="org.asem.eclipse.mii.popup.actions.GenerateJSCode"
+	              /> 
+	      </editorContribution>
+	 </extension>
+
+</plugin>
