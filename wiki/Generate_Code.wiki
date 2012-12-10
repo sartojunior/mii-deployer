@@ -1,0 +1,8 @@
+#summary SAP MII plugin - Generate ExtJS code
+
+= Generate ExtJS Code =
+
+When *mej* file is open in an editor, you can call *generate code* action.
+[http://mii-deployer.googlecode.com/svn/wiki/image/gen_code.png]
+
+After this press F5 key (synchronize filesystem) and you will see generated files.
