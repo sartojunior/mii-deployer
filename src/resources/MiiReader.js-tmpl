@@ -1,0 +1,144 @@
+/**
+ * Class used to read and convert XML data in SAP MII XML format 
+ */
+Ext.define('asem.data.MiiReader', {
+    extend: 'Ext.data.reader.Xml',
+    alternateClassName: 'asem.MiiXmlReader',
+    alias : 'reader.mii',
+
+    getModelField: function (name) {
+        var fields = this.model.getFields();
+        for (var i=0;i<fields.length;i++) {
+            if (fields[i].name == name)
+                return fields[i];
+        }
+
+        return null;
+    },
+
+    /**
+     * Override function used to retrieve record data
+     * this is necessary because MII data needs to be repaired,
+     * e.g. remove ---, NA and TimeUnavalaible strings depends on 
+     * SQLDataType of column
+     * This function retrieves ResultSet
+     */
+    readRecords: function(doc) {
+        var columnDefs = null;
+        var columnTypes = {};
+        if (this.model.prototype.modelType === 'dynamic') {
+            columnDefs = Ext.DomQuery.select('Column', doc);
+            Ext.each (columnDefs, function (col) {
+                var name = col.getAttribute('Name');
+                var type = col.getAttribute('SQLDataType');
+                columnTypes[name] = {
+                    type: type,
+                    modelField: this.getModelField (name)
+                };
+                
+                if (!columnTypes[name].modelField) {
+                    // If this mode is dynamic then add fields to the record
+                    var fields = this.model.prototype.fields.getRange();
+                    fields.push ({name: name});
+                    this.model.setFields (fields);
+                }
+
+            }, this);
+        }
+        
+        var ret = this.callParent([doc]);
+        if (ret.records.length == 0) {
+            var fatalError = Ext.DomQuery.select('FatalError', doc);
+            if (fatalError.length > 0) {
+                fatalError = fatalError[0].childNodes[0].nodeValue;
+                Ext.Msg.alert ('Ошибка', fatalError);
+            }
+            
+            return ret;
+        }
+
+        if (!columnDefs) {
+            columnDefs = Ext.DomQuery.select('Column', doc);
+            /*
+             * Build information object for column types
+             */
+            Ext.each (columnDefs, function (col) {
+                var name = col.getAttribute('Name');
+                var type = col.getAttribute('SQLDataType');
+                columnTypes[name] = {
+                    type: type,
+                    modelField: this.getModelField (name)
+                };
+            }, this);
+        }
+
+        delete columnDefs;
+        
+        Ext.each (ret.records, function (rec, index) {
+            Ext.each (rec.fields.items, function (field) {
+                if (!columnTypes[field.name])
+                    return;
+
+                var value = rec.get(field.name);
+                var sqlDataType = columnTypes[field.name].type;
+                var modelField = columnTypes[field.name].modelField;
+                if (modelField && modelField.type) {
+                    switch (modelField.type.type) {
+                        case 'bool':
+                            sqlDataType = '16';
+                            break;
+                    }
+                }
+
+                /*
+                 * Convert data depends on datatype of the column
+                 */
+                switch (sqlDataType) {
+                    /*
+                     * Number column
+                     */
+                    case '2':
+                        if (value == 'NA')
+                            rec.set (field.name, null);
+                        else
+                            rec.set (field.name, parseFloat(value));
+                        break;
+
+                    /*
+                     * Date & Timesstamp columns
+                     */
+                    case '91':
+                    case '93':
+                        if (value == 'TimeUnavailable')
+                            rec.set (field.name, null);
+                        else
+                            rec.set (field.name, Ext.Date.parse(value, 'Y-m-d\\TH:i:s'));
+                        break;
+
+                    /*
+                     * Varchar column
+                     */
+                    case '12':
+                        if (value == '---')
+                            rec.set (field.name, null);
+                        break;
+                    
+                    /*
+                     * Boolean value
+                     */
+                    case '16':
+                        if (value != 'Y' || value != 'y')
+                            rec.set (field.name, false);
+                        else
+                            rec.set (field.name, true);
+                        break;
+                }
+            });
+            
+            rec.commit();
+            ret.records[index] = rec;
+        });
+
+        return ret;
+    }
+});
