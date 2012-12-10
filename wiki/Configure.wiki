@@ -5,10 +5,11 @@ Right click mouse button on your project in Project Explorer view and choose Pro
 
 All fields are required
   * Jdbc Driver - Here you can select or type JDBC driver class name. By default use Oracle driver. To use drivers you need to install appropriate driver into Eclipse IDE
-  * URL - This is JDBC url to database with SAP NetWeaver tables
-  * User and Password - Credentials to access to the SAP NetWeaver database
+  * URL - This is JDBC url to database with [http://en.wikipedia.org/wiki/SAP_NetWeaver SAP NetWeaver] tables
+  * User and Password - Credentials to access to the [http://en.wikipedia.org/wiki/SAP_NetWeaver SAP NetWeaver] database
   * Test Query - Query will be used to determine connection status when plugin update or commit files. By default using test query for Oracle database
-  * WEB Url - HTTP url to access the [http://en.wikipedia.org/wiki/SAP_NetWeaver NetWeaver]
-  * NW user, NW Password - Credentials to access NetWeaver through the HTTP protocol. This user must have privilegies to work with SAP MII
+  * WEB Url - HTTP url to access to [http://en.wikipedia.org/wiki/SAP_NetWeaver SAP NetWeaver]
+  * NW user, NW Password - Credentials to access to the [http://en.wikipedia.org/wiki/SAP_NetWeaver SAP NetWeaver]through the HTTP protocol. This user must have privileges to work with SAP MII
+  * MII Project - name of xMII project as you see in in SAP MII Workbench
 
 [http://mii-deployer.googlecode.com/svn/wiki/image/ProjectProperty.png]
