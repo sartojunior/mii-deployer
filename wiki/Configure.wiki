@@ -14,6 +14,6 @@ All fields are required
 
 Further you should create a WEB folder in project's source 
 
-Next: [actions Using actions]
+See also: [actions Using actions], [editor ExtJS Editor]
 
 [http://mii-deployer.googlecode.com/svn/wiki/image/ProjectProperty.png]
