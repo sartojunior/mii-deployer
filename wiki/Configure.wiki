@@ -12,6 +12,8 @@ All fields are required
   * NW user, NW Password - Credentials to access to the [http://en.wikipedia.org/wiki/SAP_NetWeaver SAP NetWeaver]through the HTTP protocol. This user must have privileges to work with SAP MII
   * MII Project - name of xMII project as you see in in SAP MII Workbench
 
-Further you should create a WEB folder in project's source [actions Using actions]
+Further you should create a WEB folder in project's source 
+
+Next: [actions Using actions]
 
 [http://mii-deployer.googlecode.com/svn/wiki/image/ProjectProperty.png]
