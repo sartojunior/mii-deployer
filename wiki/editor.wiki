@@ -31,4 +31,6 @@ When you press *next* button, you will see last wizard window. In this window yo
 
 [http://mii-deployer.googlecode.com/svn/wiki/image/model_3.png]
 
+Further you can edit attributes in the Eclipse *properties view*.
+
 Next: [Generate_Code Generate ExtJS Code]
