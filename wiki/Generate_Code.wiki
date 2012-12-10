@@ -15,7 +15,7 @@ Folder structure:
   * model - folder contains all model and store classes
   * asem - utility classes
 
-Model and Store classes for one XacuteQuery stores in one file
+Model and Store classes for one XacuteQuery stored in one file
 
 Sample:
 <code language="JavaScript">
