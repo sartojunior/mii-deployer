@@ -1,0 +1,51 @@
+/**
+* File contains grid layout for ${view.getPropertyValue("name")} view
+*
+* Each layout field should be written using follows format
+*
+*	 "field": "field",
+*    "name": "{##field}"
+*    "width": "150",
+*    "editable": false,
+*    "locked": false,
+*
+*     FIELD TYPES E.G.
+*
+*	 "format": "d.m.Y",
+*    "type": "datefield",
+*    "initTimeFormat": "H:i",
+*    "initTime": "CUR" // current field time used when date has been changed
+*
+*     OR
+*
+*    "type": "combobox",
+*    "options": {
+*       "store": "<reference store>",
+*        "params": [
+*            {
+*                "name": "<name>",
+*                "value": "<value>"
+*            }
+*            ...
+*        ]
+*    }
+*/
+{
+	"encoding" : "UTF-8",
+    "name": "${view.getPropertyValue("name")} Grid layout",
+#foreach(${con} in ${view.targetConnections})
+    "store": "${con.source.getPropertyValue("name")}",
+    "layout": [
+#foreach($scon in ${con.source.targetConnections})
+#set($varLength = ${scon.source.columns.size()})
+#foreach($field in ${scon.source.columns})
+        {
+            "field": "${field.name}",
+            "name": "{${i18n}${field.name}}"
+        }#if($varLength > ${foreach.count}),#end
+
+#end
+#end
+	]
+#end
+}

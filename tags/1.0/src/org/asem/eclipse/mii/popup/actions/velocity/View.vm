@@ -1,0 +1,23 @@
+#if (${view.getPropertyValue("grid")})
+/**
+ * Class define ${view.getPropertyValue("name")} view object
+ */
+Ext.define("${appName}.view.${store.getPropertyValue("name")}", {
+    extend: 'Ext.ibs.BaseGrid',
+    alias: ['widget.${view.getPropertyValue("alias")}'],
+
+    configURL: 'data/${view.getPropertyValue("name")}_layout.irpt',
+
+    requires: [
+        'Ext.grid.Panel',
+        'Ext.layout.container.Border'
+    ],
+    layout: 'border',
+    items: []
+});
+#else
+/*
+* EMPTY FILE
+* TODO add content to implement ${view.getPropertyValue("name")}
+*/
+#end

@@ -1,0 +1,45 @@
+/** 
+ * ${model.getPropertyValue("name")} Model
+ */
+Ext.define('${appName}.model.${model.getPropertyValue("name")}Model', {
+    extend: 'Ext.data.Model',
+#set ($valLength = ${model.columns.size()})
+    fields: [
+#foreach (${field} in ${model.columns})
+##         {name: '${field.name}'#if ($field.type), type: '${field.type}'#end}#if (${foreach.count} < ${valLength}),#end
+         {name: '${field.name}'}#if (${foreach.count} < ${valLength}),#end
+
+#end
+    ]
+});
+
+/**
+ * Class define ${model.getPropertyValue("name")}Store store object
+ */
+Ext.define('${appName}.model.${model.getPropertyValue("name")}Store', {
+    extend: 'Ext.data.Store',
+    model: '${appName}.${model.getPropertyValue("name")}Model',
+    autoLoad: true,
+    
+    requires: [
+       'asem.data.MiiReader'
+    ],
+
+    proxy: {
+        type: 'ajax',
+        extraParams: {
+            'QueryTemplate': '${model.getPropertyValue("QueryTemplate")}'
+            'Content-Type': 'text/xml'
+        },
+        actionMethods: {
+            read   : 'POST'
+        },
+        api: {
+            read: '/XMII/Illuminator'
+        },
+        reader: {
+            type: 'mii',
+            record: 'Row'
+        }
+    }
+});

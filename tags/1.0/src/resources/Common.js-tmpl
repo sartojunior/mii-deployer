@@ -1,0 +1,131 @@
+Ext.define ('asem.utils.Common', {
+    requires: [
+        'Ext.*'
+    ],
+
+    singleton: true,
+
+    createXmlElement: function (name, value) {
+        if (value == undefined || value == null || value == '') 
+            return '';
+        else
+            return '<' + name + '>' + value + '</' + name + '>';
+    },
+
+    /**
+     * Function refreshes any grid and after restores current selection based
+     * on value of the key field 
+     * @param grid - grid to be refreshed
+     * @param params - additional parameters which use to reload store
+     * @param idFieldName - key field name
+     */
+    refreshAnyGrid: function (grid, params, idFieldName, selectedItemObj, callbackFunc, scope) {
+        // get current selection
+        var selectedItem = selectedItemObj;
+        if (!selectedItem)
+            selectedItem  = grid.getSelectionModel().getLastSelected();
+        
+        grid.getStore().load({ 
+            params: params,
+            callback: function (records, operation, success) {
+                if (selectedItem) {
+                    // restore previously selected item
+                    var record = grid.getStore().findRecord (idFieldName, selectedItem.get(idFieldName));
+                    if (record)
+                        grid.getSelectionModel().select (record);
+                }
+
+                if (callbackFunc)
+                    callbackFunc.call (scope ? scope : this, records, operation, success);
+            },
+            exception: function (proxy, response, operation) {
+                if (operation) {
+                    Ext.Msg.alert('Error', operation.error);
+                }
+                else {
+                    Ext.Msg.alert ('Error', 'Proxy error');
+                }
+            }
+        });
+    },
+
+    callXaTransaction: function (trxName, params, successCallback, scope) {
+        var fullParams = {
+            'QueryTemplate': trxName,
+            'Content-Type': 'text/xml'
+        };
+
+        Ext.apply (fullParams, params);
+        Ext.Ajax.request ({
+            url: '/XMII/Illuminator',
+            params: fullParams,
+            success: function (response){
+                if (response.responseXML) {
+                    var fatalError = Ext.DomQuery.select('FatalError', response.responseXML);
+                    if (fatalError.length > 0) {
+                        fatalError = fatalError[0].childNodes[0].nodeValue;
+                        ibs.utils.Common.showError (fatalError);
+                    }
+                }
+
+                if (successCallback)
+                    successCallback.call (scope ? scope : this, response);
+            }
+        });
+    },
+
+    showError: function (title, fatalErrorText) {
+        var firstIndex = fatalErrorText.indexOf ('|');
+        if (firstIndex != -1) {
+            var lastIndex = fatalErrorText.indexOf ('|', firstIndex+1);
+            Ext.Msg.alert (title, fatalErrorText.substr (firstIndex + 1, lastIndex - firstIndex - 1));
+        }
+        else
+            Ext.Msg.alert (title, fatalErrorText);
+    },
+    
+    setupIdleHandlers: function (timeout) {
+        var keepaliveHandler = null;
+        var timeoutHandler = null;
+        
+        keepaliveHandler = new Ext.util.DelayedTask(function(){
+            Ext.Ajax.request({
+                url : 'XMII/Illuminator?service=admin&mode=Who',
+                method : 'GET',
+                success: function(response, options) {
+                    keepaliveHandler.delay(timeout);
+                }
+            });
+        });
+
+        timeoutHandler = new Ext.util.DelayedTask(function() {
+            Ext.Ajax.request({
+                url : '/XMII/Illuminator?service=Logout',
+                method : 'GET',
+                success: function(response, options){
+                    Ext.MessageBox.show({
+                        title: 'Session Closed',
+                        msg: 'Session Closed',
+                        buttons: Ext.MessageBox.OK,
+                        fn: function() {
+                            window.location = 'pnppk.irpt';
+                        },
+                        icon: Ext.MessageBox.WARNING
+                    });
+                }
+            });
+        });
+
+        keepaliveHandler.delay (timeout);
+        timeoutHandler.delay (timeout);
+
+        // check for mouse movements
+        document.body.onmousemove = function(e) {
+            timeoutHandler.delay(timeout);
+        };  
+        
+        document.body.onkeypress = function(e) {
+            timeoutHandler.delay(timeout);
+        };
+    }
+});

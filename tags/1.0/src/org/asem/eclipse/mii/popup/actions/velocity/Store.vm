@@ -1,0 +1,30 @@
+/**
+ * Class define ${store.getPropertyValue("name")} store object
+ */
+Ext.define('${appName}.store.${store.getPropertyValue("name")}', {
+    extend: 'Ext.data.Store',
+#foreach($con in ${store.targetConnections})
+    model: '${appName}.model.${con.source.getPropertyValue("name")}',
+#end
+
+    autoLoad: ${store.getPropertyValue("autoLoad")},
+
+    proxy: {
+        type: 'ajax',
+        extraParams: {
+            'QueryTemplate': '${store.getPropertyValue("QueryTemplate")}',
+            'Content-Type': 'text/xml'
+        },
+        actionMethods: {
+            read   : '${store.getPropertyValue("actionMethods.read")}'
+        },
+        api: {
+            read: '${store.getPropertyValue("api.read")}'
+        },
+        reader: {
+            type: '${store.getPropertyValue("reader.type")}',
+            record: '${store.getPropertyValue("reader.record")}'
+        }
+    }
+});
+

@@ -1,0 +1,33 @@
+/** 
+ * Class define ${controller.getPropertyValue("name")} controller object
+ */
+Ext.define('${appName}.controller.${controller.getPropertyValue("name")}', {
+    extend: 'Ext.app.Controller',
+
+    stores: [
+#set ($nfirst = false)
+#foreach ($con in ${controller.targetConnections})
+#if ("${con.source.class.simpleName}" == "StoreShape")
+        #if ($nfirst),#end'${con.source.getPropertyValue("name")}'#set($nfirst = true)
+
+#end
+#end
+    ],
+    models: [
+#set ($nfirst = false)
+#foreach ($con in ${controller.targetConnections})
+#if ("${con.source.class.simpleName}" == "ModelShape")
+        #if ($nfirst),#end'${con.source.getPropertyValue("name")}'#set($nfirst = true)
+
+#end
+#end
+    ],
+
+    views: [],
+
+    refs: [],
+
+    init: function() {
+        
+    }
+});
